@@ -1,0 +1,13 @@
+{
+  "name": "xm",
+  "version": "0.0.1",
+  "description": "Deno import map manager",
+  "main": "xm.ts",
+  "repository": "https://github.com/0x-jerry/xm.git",
+  "author": "0x-jerry <x.jerry.wang@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "deno run --import-map ./import_map.json --no-check -A src/main.ts",
+    "release": "x flow release"
+  }
+}
