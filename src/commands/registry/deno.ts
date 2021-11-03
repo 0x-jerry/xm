@@ -1,6 +1,6 @@
 import { RegistryProvider } from './type.ts'
 
-const registryType = 'deno.land'
+const registryType = 'denoStd'
 
 interface DenoStdParseResult {
   type: typeof registryType
@@ -62,9 +62,7 @@ export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
   }
 
   async versions(opt: DenoStdParseResult): Promise<string[]> {
-    const res = await fetch(
-      `https://cdn.deno.land/${opt.mod}/meta/versions.json`,
-    )
+    const res = await fetch(`https://cdn.deno.land/std/meta/versions.json`)
 
     const r = await res.json()
 

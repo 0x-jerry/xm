@@ -43,5 +43,8 @@ try {
 
   await xm.parse(params)
 } catch (e) {
+  console.log(e.message || e)
   debug.error(e)
+
+  Deno.exit(1)
 }

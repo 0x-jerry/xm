@@ -1,6 +1,6 @@
 import { RegistryProvider } from './type.ts'
 
-const registryType = 'deno.x'
+const registryType = 'deno'
 
 interface DenoParseResult {
   type: typeof registryType
@@ -65,6 +65,12 @@ export class DenoProvider implements RegistryProvider<DenoParseResult> {
     const res = await fetch(
       `https://cdn.deno.land/${opt.mod}/meta/versions.json`,
     )
+
+    if (res.status !== 200) {
+      throw new Error(
+        `Can not find mod ${opt.mod} at https://deno.land/x/${opt.mod}`,
+      )
+    }
 
     const r: DenoFetchResult = await res.json()
 

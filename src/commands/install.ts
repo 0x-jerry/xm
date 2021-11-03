@@ -1,7 +1,8 @@
 import { Command, EnumType } from 'cliffy/command/mod.ts'
 import { importMap } from '../importMap.ts'
+import { registryManager, registryTypes } from './registry/mod.ts'
 
-const registryType = new EnumType(['deno', 'github'])
+const registryType = new EnumType(registryTypes)
 
 export const installCommand = new Command()
   .alias('i')
@@ -13,9 +14,10 @@ export const installCommand = new Command()
     default: 'deno',
   })
   .arguments('<pkgName:string>')
-  .action((opt, pkgName) => {
+  .action(async (opt, pkgName) => {
     const { registry } = opt
 
-    console.log(importMap)
-    console.log(registry, pkgName)
+    const m = await registryManager.install(pkgName, registry)
+    console.log(m)
+    // console.log(registry, pkgName)
   })

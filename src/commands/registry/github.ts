@@ -4,7 +4,10 @@ const registryType = 'github'
 
 interface GithubParseResult {
   type: typeof registryType
-  repo: string
+  /**
+   * repo
+   */
+  mod: string
   username: string
   version: string
 }
@@ -32,7 +35,7 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
     }
 
     return {
-      repo: '',
+      mod: '',
       username: '',
       version: '',
       ...group,
@@ -56,14 +59,14 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
       type: registryType,
       version,
       username,
-      repo,
+      mod: repo,
     }
   }
 
   generate(opt: GithubParseResult): string {
-    const { version, repo, username } = opt
+    const { version, mod, username } = opt
 
-    return `https://raw.githubusercontent.com/${username}/${repo}/${version}/`
+    return `https://raw.githubusercontent.com/${username}/${mod}/${version}/`
   }
 
   /**
@@ -72,13 +75,19 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
    * @returns
    */
   async versions(opt: GithubParseResult): Promise<string[]> {
-    const f = await fetch(
-      `https://api.github.com/repos/${opt.username}/${opt.repo}/tags`,
+    const res = await fetch(
+      `https://api.github.com/repos/${opt.username}/${opt.mod}/tags`,
     )
 
-    const res: GithubFetchTag[] = await f.json()
+    if (res.status !== 200) {
+      throw new Error(
+        `Can not find mod ${opt.mod} at https://github.com/${opt.username}/${opt.mod}`,
+      )
+    }
 
-    return res.map((i) => i.name)
+    const r: GithubFetchTag[] = await res.json()
+
+    return r.map((i) => i.name)
   }
 }
 
