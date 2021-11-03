@@ -65,4 +65,30 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
 
     return `https://raw.githubusercontent.com/${username}/${repo}/${version}/`
   }
+
+  /**
+   *
+   * @param opt
+   * @returns
+   */
+  async versions(opt: GithubParseResult): Promise<string[]> {
+    const f = await fetch(
+      `https://api.github.com/repos/${opt.username}/${opt.repo}/tags`,
+    )
+
+    const res: GithubFetchTag[] = await f.json()
+
+    return res.map((i) => i.name)
+  }
+}
+
+interface GithubFetchTag {
+  name: string
+  zipball_url: string
+  tarball_url: string
+  commit: {
+    sha: string
+    url: string
+  }
+  node_id: string
 }

@@ -60,4 +60,19 @@ export class DenoProvider implements RegistryProvider<DenoParseResult> {
 
     return `https://deno.land/x/${mod}@${version}/`
   }
+
+  async versions(opt: DenoParseResult): Promise<string[]> {
+    const res = await fetch(
+      `https://cdn.deno.land/${opt.mod}/meta/versions.json`,
+    )
+
+    const r: DenoFetchResult = await res.json()
+
+    return r.versions
+  }
+}
+
+interface DenoFetchResult {
+  latest: string
+  versions: string[]
 }

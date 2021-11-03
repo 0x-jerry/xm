@@ -8,4 +8,5 @@ export interface RegistryProvider<T extends RegistryOption> {
   parse(url: string): T
   parseMod(mod: string): T
   generate(opt: T): string
+  versions(opt: T): string[] | Promise<string[]>
 }

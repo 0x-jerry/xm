@@ -60,4 +60,14 @@ export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
 
     return `https://deno.land/std@${version}/${mod}/`
   }
+
+  async versions(opt: DenoStdParseResult): Promise<string[]> {
+    const res = await fetch(
+      `https://cdn.deno.land/${opt.mod}/meta/versions.json`,
+    )
+
+    const r = await res.json()
+
+    return r.versions
+  }
 }
