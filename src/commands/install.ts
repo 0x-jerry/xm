@@ -18,6 +18,6 @@ export const installCommand = new Command()
     const { registry } = opt
 
     const m = await registryManager.install(pkgName, registry)
-    console.log(m)
-    // console.log(registry, pkgName)
+    importMap.set(m.name, m.url)
+    // save
   })

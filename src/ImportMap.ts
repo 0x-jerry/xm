@@ -2,10 +2,14 @@ import { debug } from './debug.ts'
 import { join } from 'path/mod.ts'
 
 export class ImportMap {
-  #maps: Record<string, string> = {}
+  #mods: Record<string, string> = {}
+
+  get mods() {
+    return this.#mods
+  }
 
   constructor(public readonly path: string) {
-    this.#maps = this.#read()
+    this.#mods = this.#read()
   }
 
   #read() {
@@ -20,17 +24,17 @@ export class ImportMap {
   }
 
   get(name: string): string | undefined {
-    return this.#maps[name]
+    return this.#mods[name]
   }
 
   set(name: string, url: string) {
-    this.#maps[name] = url
+    this.#mods[name] = url
   }
 
   async save() {
     const txt = JSON.stringify(
       {
-        imports: this.#maps,
+        imports: this.#mods,
       },
       null,
       2,
