@@ -36,6 +36,17 @@ Deno.test('parse mod', () => {
   })
 })
 
+Deno.test('parse mod without version', () => {
+  const m = p.parseMod('testing/xx/mod.ts')
+
+  assertEquals(m, {
+    mod: 'testing',
+    version: '',
+    type: p.type,
+    entry: 'xx/mod.ts',
+  })
+})
+
 Deno.test('parse mod with entry', () => {
   const m = p.parseMod('testing@0.111.0/xx/mod.ts')
 

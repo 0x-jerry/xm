@@ -21,6 +21,19 @@ export abstract class RegistryProvider<
    * @param modName
    */
   parseMod(modName: string): RegistryOption {
+    const hasVersion = modName.includes('@')
+
+    if (!hasVersion) {
+      const [mod, ...entry] = modName.split('/')
+
+      return {
+        type: '',
+        version: '',
+        mod,
+        entry: entry.join('/'),
+      }
+    }
+
     const [mod = '', suffix = ''] = modName.split('@')
     const [version = '', ...entry] = suffix.split('/')
 

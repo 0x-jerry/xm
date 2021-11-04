@@ -55,6 +55,18 @@ export class GithubProvider extends RegistryProvider<GithubParseResult> {
    */
   parseMod(mod: string): GithubParseResult {
     const opt = super.parseMod(mod)
+
+    if (!opt.version) {
+      const [mod, ...entry] = opt.entry.split('/')
+      return {
+        username: opt.mod,
+        mod,
+        type: registryType,
+        entry: entry.join('/'),
+        version: '',
+      }
+    }
+
     const [username, repo] = opt.mod.split('/')
 
     return {
