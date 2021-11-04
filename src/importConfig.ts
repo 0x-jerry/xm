@@ -3,7 +3,7 @@ import { join } from 'path/mod.ts'
 import { exists } from 'fs/mod.ts'
 import { Confirm } from 'cliffy/prompt/confirm.ts'
 
-export class ImportMap {
+export class ImportConfig {
   #mods: Record<string, string> = {}
 
   get mods() {
@@ -56,4 +56,6 @@ export class ImportMap {
   }
 }
 
-export const importMap = new ImportMap(join(Deno.cwd(), 'import_map.json'))
+export const importConfig = new ImportConfig(
+  join(Deno.cwd(), 'import_map.json'),
+)

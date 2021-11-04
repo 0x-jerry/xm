@@ -1,6 +1,6 @@
 import { Command, EnumType } from 'cliffy/command/mod.ts'
 import { debug } from '../debug.ts'
-import { importMap } from '../importMap.ts'
+import { importConfig } from '../importConfig.ts'
 import { registryManager, registryTypes } from '../registry/mod.ts'
 
 const registryType = new EnumType(registryTypes)
@@ -27,15 +27,15 @@ export const upgradeCommand = new Command()
 
     const conf = await registryManager.upgrade(upgradeModOpt.opt)
 
-    importMap.set(upgradeModOpt.name, conf.url)
+    importConfig.set(upgradeModOpt.name, conf.url)
 
-    await importMap.save()
+    await importConfig.save()
   })
 
 function getUpgradeOption(modName: string) {
-  for (const mod in importMap.mods) {
-    if (Object.prototype.hasOwnProperty.call(importMap.mods, mod)) {
-      const uri = importMap.mods[mod]
+  for (const mod in importConfig.mods) {
+    if (Object.prototype.hasOwnProperty.call(importConfig.mods, mod)) {
+      const uri = importConfig.mods[mod]
       const type = registryManager.getType(uri)
       if (!type) {
         debug.warn('Parse type failed:', uri)

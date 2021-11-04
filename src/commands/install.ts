@@ -1,5 +1,5 @@
 import { Command, EnumType } from 'cliffy/command/mod.ts'
-import { importMap } from '../importMap.ts'
+import { importConfig } from '../importConfig.ts'
 import { registryManager, registryTypes } from '../registry/mod.ts'
 
 const registryType = new EnumType(registryTypes)
@@ -18,7 +18,7 @@ export const installCommand = new Command()
     const { registry } = opt
 
     const m = await registryManager.install(pkgName, registry)
-    importMap.set(m.name, m.url)
+    importConfig.set(m.name, m.url)
 
-    await importMap.save()
+    await importConfig.save()
   })
