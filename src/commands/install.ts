@@ -13,11 +13,11 @@ export const installCommand = new Command()
   .option('-r, --registry <type:registry>', 'Registry type.', {
     default: 'deno',
   })
-  .arguments('<pkgName:string>')
-  .action(async (opt, pkgName) => {
+  .arguments('<modName:string>')
+  .action(async (opt, modName) => {
     const { registry } = opt
 
-    const m = await registryManager.install(pkgName, registry)
+    const m = await registryManager.install(modName, registry)
     importConfig.set(m.name, m.url)
 
     await importConfig.save()
