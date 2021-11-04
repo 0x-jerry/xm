@@ -25,7 +25,7 @@ const xm = new Command()
   .command('completions', new CompletionsCommand())
   // upgrade
   .command(
-    'upgrade',
+    'upgrade-xm',
     new UpgradeCommand({
       main: 'xm.ts',
       importMap: 'import_map.json',

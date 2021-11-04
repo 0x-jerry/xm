@@ -2,6 +2,7 @@ export interface RegistryOption {
   type: string
   version: string
   mod: string
+  entry: string
 }
 
 export interface RegistryProvider<T extends RegistryOption = RegistryOption> {

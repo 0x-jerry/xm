@@ -1,15 +1,14 @@
-import { RegistryProvider } from './type.ts'
+import { RegistryOption, RegistryProvider } from './type.ts'
 
 const registryType = 'github'
 
-interface GithubParseResult {
+interface GithubParseResult extends RegistryOption {
   type: typeof registryType
   /**
    * repo
    */
   mod: string
   username: string
-  version: string
 }
 
 export class GithubProvider implements RegistryProvider<GithubParseResult> {
@@ -26,7 +25,7 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
    */
   parse(url: string): GithubParseResult {
     const r =
-      /^https?:\/\/raw\.githubusercontent\.com\/(?<username>[^/]+)\/(?<repo>[^/]+)\/(?<version>[^/]+)\//
+      /^https?:\/\/raw\.githubusercontent\.com\/(?<username>[^/]+)\/(?<repo>[^/]+)\/(?<version>[^/]+)\/(?<entry>.*)/
 
     const group = r.exec(url)?.groups || {}
 
@@ -38,6 +37,7 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
       mod: '',
       username: '',
       version: '',
+      entry: '',
       ...group,
       type: registryType,
     }
@@ -46,19 +46,22 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
   /**
    * ex.
    *
+   * - username/repo@version/mod.ts
    * - username/repo@version
    * - username/repo
    *
    * @param mod
    */
   parseMod(mod: string): GithubParseResult {
-    const [prefix, version] = mod.split('@')
+    const [prefix, suffix] = mod.split('@')
     const [username, repo] = prefix.split('/')
+    const [version, entry] = suffix.split('/', 1)
 
     return {
       type: registryType,
       version,
       username,
+      entry,
       mod: repo,
     }
   }

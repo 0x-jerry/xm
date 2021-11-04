@@ -1,11 +1,9 @@
-import { RegistryProvider } from './type.ts'
+import { RegistryOption, RegistryProvider } from './type.ts'
 
 const registryType = 'denoStd'
 
-interface DenoStdParseResult {
+interface DenoStdParseResult extends RegistryOption {
   type: typeof registryType
-  mod: string
-  version: string
 }
 
 export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
@@ -21,7 +19,8 @@ export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
    * @returns
    */
   parse(url: string): DenoStdParseResult {
-    const r = /^https?:\/\/deno\.land\/std@(?<version>[^/]+)\/(?<mod>[^/]+)\//
+    const r =
+      /^https?:\/\/deno\.land\/std@(?<version>[^/]+)\/(?<mod>[^/]+)\/(?<entry>.*)/
 
     const group = r.exec(url)?.groups || {}
 
@@ -32,6 +31,7 @@ export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
     return {
       mod: '',
       version: '',
+      entry: '',
       ...group,
       type: registryType,
     }
@@ -40,25 +40,28 @@ export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
   /**
    * ex.
    *
+   * - mod@version/mod.ts
    * - mod@version
    * - mod
    *
    * @param modName
    */
   parseMod(modName: string): DenoStdParseResult {
-    const [mod, version] = modName.split('@')
+    const [mod, suffix] = modName.split('@')
+    const [version, ...entry] = suffix.split('/')
 
     return {
       type: registryType,
       version,
       mod,
+      entry: entry.join('/'),
     }
   }
 
   generate(opt: DenoStdParseResult): string {
-    const { version, mod } = opt
+    const { version, mod, entry } = opt
 
-    return `https://deno.land/std@${version}/${mod}/`
+    return `https://deno.land/std@${version}/${mod}/${entry}`
   }
 
   async versions(opt: DenoStdParseResult): Promise<string[]> {

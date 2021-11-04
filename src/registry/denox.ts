@@ -1,11 +1,9 @@
-import { RegistryProvider } from './type.ts'
+import { RegistryOption, RegistryProvider } from './type.ts'
 
 const registryType = 'deno'
 
-interface DenoParseResult {
+interface DenoParseResult extends RegistryOption {
   type: typeof registryType
-  mod: string
-  version: string
 }
 
 export class DenoProvider implements RegistryProvider<DenoParseResult> {
@@ -21,7 +19,8 @@ export class DenoProvider implements RegistryProvider<DenoParseResult> {
    * @returns
    */
   parse(url: string): DenoParseResult {
-    const r = /^https?:\/\/deno\.land\/x\/(?<mod>[^@]+)@(?<version>[^/]+)\//
+    const r =
+      /^https?:\/\/deno\.land\/x\/(?<mod>[^@]+)@(?<version>[^/]+)\/(?<entry>.*)/
 
     const group = r.exec(url)?.groups || {}
 
@@ -32,6 +31,7 @@ export class DenoProvider implements RegistryProvider<DenoParseResult> {
     return {
       mod: '',
       version: '',
+      entry: '',
       ...group,
       type: registryType,
     }
@@ -40,18 +40,21 @@ export class DenoProvider implements RegistryProvider<DenoParseResult> {
   /**
    * ex.
    *
+   * - mod@version/mod.ts
    * - mod@version
    * - mod
    *
    * @param modName
    */
   parseMod(modName: string): DenoParseResult {
-    const [mod, version] = modName.split('@')
+    const [mod, suffix] = modName.split('@')
+    const [version, entry] = suffix.split('/', 1)
 
     return {
       type: registryType,
       version,
       mod,
+      entry,
     }
   }
 

@@ -4,12 +4,12 @@ import { registryManager, registryTypes } from '../registry/mod.ts'
 
 const registryType = new EnumType(registryTypes)
 
-export const installCommand = new Command()
-  .alias('i')
-  .description('Install module.')
+export const updateCommand = new Command()
+  .alias('up')
+  .description('Upgrade module.')
   .type('registry', registryType)
-  .example('Install with github', 'xm install -r github username/repo')
-  .example('Install with deno.land', 'xm install mod')
+  .example('Upgrade with github', 'xm upgrade -r github username/repo')
+  .example('Install with deno.land', 'xm upgrade mod')
   .option('-r, --registry <type:registry>', 'Registry type.', {
     default: 'deno',
   })
@@ -17,7 +17,7 @@ export const installCommand = new Command()
   .action(async (opt, pkgName) => {
     const { registry } = opt
 
-    const m = await registryManager.install(pkgName, registry)
+    const m = await registryManager.upgrade(pkgName, registry)
     importMap.set(m.name, m.url)
     // save
   })
