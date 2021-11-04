@@ -55,7 +55,7 @@ export class Registry {
   }
 
   parse(url: string, type: RegistryType): RegistryOption {
-    return this.#getProvider(type).parseMod(url)
+    return this.#getProvider(type).parse(url)
   }
 
   async upgrade(opt: RegistryOption): Promise<ModConfig> {

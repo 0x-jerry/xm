@@ -5,6 +5,7 @@ import { version } from '../version.ts'
 import { config } from './config.ts'
 import { debug } from './debug.ts'
 import { installCommand } from './commands/install.ts'
+import { upgradeCommand } from './commands/upgrade.ts'
 
 const xm = new Command()
   .name('xm')
@@ -36,6 +37,7 @@ const xm = new Command()
     }),
   )
   .command('install', installCommand)
+  .command('upgrade', upgradeCommand)
 
 // parse
 try {
@@ -43,7 +45,7 @@ try {
 
   await xm.parse(params)
 } catch (e) {
-  console.log(e.message || e)
+  console.error(e || e)
   debug.error(e)
 
   Deno.exit(1)

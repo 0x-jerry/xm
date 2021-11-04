@@ -5,7 +5,7 @@ import { registryManager, registryTypes } from '../registry/mod.ts'
 
 const registryType = new EnumType(registryTypes)
 
-export const updateCommand = new Command()
+export const upgradeCommand = new Command()
   .alias('up')
   .description('Upgrade module.')
   .type('registry', registryType)
@@ -18,19 +18,18 @@ export const updateCommand = new Command()
   .action(async (opt, pkgName) => {
     const { registry } = opt
 
-    const modOpt = registryManager.parse(pkgName, registry)
+    const modOpt = registryManager.parseMod(pkgName, registry)
 
     const upgradeModOpt = getUpgradeOption(modOpt.mod)
     if (!upgradeModOpt) {
-      throw new Error('Failed to parse mod:', pkgName)
+      throw new Error('Failed to parse mod: ' + pkgName)
     }
 
     const conf = await registryManager.upgrade(upgradeModOpt.opt)
 
-    console.log(conf, upgradeModOpt)
+    importMap.set(upgradeModOpt.name, conf.url)
 
-    // importMap.set(m.name, m.url)
-    // save
+    await importMap.save()
   })
 
 function getUpgradeOption(modName: string) {
@@ -47,7 +46,7 @@ function getUpgradeOption(modName: string) {
 
       if (opt.mod === modName) {
         return {
-          mod,
+          name: mod,
           opt,
         }
       }

@@ -19,6 +19,6 @@ export const installCommand = new Command()
 
     const m = await registryManager.install(pkgName, registry)
     importMap.set(m.name, m.url)
-    console.log(importMap.mods)
-    // save
+
+    await importMap.save()
   })
