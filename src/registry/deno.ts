@@ -1,4 +1,5 @@
-import { RegistryOption, RegistryProvider } from './type.ts'
+import { RegistryOption } from './type.ts'
+import { RegistryProvider } from './RegistryProvider.ts'
 
 const registryType = 'denoStd'
 
@@ -6,7 +7,7 @@ interface DenoStdParseResult extends RegistryOption {
   type: typeof registryType
 }
 
-export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
+export class DenoStdProvider extends RegistryProvider<DenoStdParseResult> {
   readonly type = registryType
 
   check(url: string): boolean {
@@ -47,14 +48,11 @@ export class DenoStdProvider implements RegistryProvider<DenoStdParseResult> {
    * @param modName
    */
   parseMod(modName: string): DenoStdParseResult {
-    const [mod, suffix] = modName.split('@')
-    const [version, ...entry] = suffix.split('/')
+    const opt = super.parseMod(modName)
 
     return {
+      ...opt,
       type: registryType,
-      version,
-      mod,
-      entry: entry.join('/'),
     }
   }
 

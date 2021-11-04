@@ -1,4 +1,5 @@
-import { RegistryOption, RegistryProvider } from './type.ts'
+import { RegistryProvider } from './RegistryProvider.ts'
+import { RegistryOption } from './type.ts'
 
 const registryType = 'deno'
 
@@ -6,7 +7,7 @@ interface DenoParseResult extends RegistryOption {
   type: typeof registryType
 }
 
-export class DenoProvider implements RegistryProvider<DenoParseResult> {
+export class DenoProvider extends RegistryProvider<DenoParseResult> {
   readonly type = registryType
 
   check(url: string): boolean {
@@ -47,21 +48,18 @@ export class DenoProvider implements RegistryProvider<DenoParseResult> {
    * @param modName
    */
   parseMod(modName: string): DenoParseResult {
-    const [mod, suffix] = modName.split('@')
-    const [version, entry] = suffix.split('/', 1)
+    const opt = super.parseMod(modName)
 
     return {
+      ...opt,
       type: registryType,
-      version,
-      mod,
-      entry,
     }
   }
 
   generate(opt: DenoParseResult): string {
-    const { version, mod } = opt
+    const { version, mod, entry } = opt
 
-    return `https://deno.land/x/${mod}@${version}/`
+    return `https://deno.land/x/${mod}@${version}/${entry}`
   }
 
   async versions(opt: DenoParseResult): Promise<string[]> {

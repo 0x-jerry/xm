@@ -1,4 +1,5 @@
-import { RegistryOption, RegistryProvider } from './type.ts'
+import { RegistryProvider } from './RegistryProvider.ts'
+import { RegistryOption } from './type.ts'
 
 const registryType = 'github'
 
@@ -11,7 +12,7 @@ interface GithubParseResult extends RegistryOption {
   username: string
 }
 
-export class GithubProvider implements RegistryProvider<GithubParseResult> {
+export class GithubProvider extends RegistryProvider<GithubParseResult> {
   readonly type = registryType
 
   check(url: string): boolean {
@@ -25,11 +26,11 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
    */
   parse(url: string): GithubParseResult {
     const r =
-      /^https?:\/\/raw\.githubusercontent\.com\/(?<username>[^/]+)\/(?<repo>[^/]+)\/(?<version>[^/]+)\/(?<entry>.*)/
+      /^https?:\/\/raw\.githubusercontent\.com\/(?<username>[^/]+)\/(?<mod>[^/]+)\/(?<version>[^/]+)\/(?<entry>.*)/
 
     const group = r.exec(url)?.groups || {}
 
-    if (!group.repo) {
+    if (!group.mod) {
       throw new Error(`Parse error: ${url}`)
     }
 
@@ -53,23 +54,21 @@ export class GithubProvider implements RegistryProvider<GithubParseResult> {
    * @param mod
    */
   parseMod(mod: string): GithubParseResult {
-    const [prefix, suffix] = mod.split('@')
-    const [username, repo] = prefix.split('/')
-    const [version, entry] = suffix.split('/', 1)
+    const opt = super.parseMod(mod)
+    const [username, repo] = opt.mod.split('/')
 
     return {
-      type: registryType,
-      version,
+      ...opt,
       username,
-      entry,
       mod: repo,
+      type: registryType,
     }
   }
 
   generate(opt: GithubParseResult): string {
-    const { version, mod, username } = opt
+    const { version, mod, username, entry } = opt
 
-    return `https://raw.githubusercontent.com/${username}/${mod}/${version}/`
+    return `https://raw.githubusercontent.com/${username}/${mod}/${version}/${entry}`
   }
 
   /**
