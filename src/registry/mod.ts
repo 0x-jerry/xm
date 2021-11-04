@@ -1,7 +1,8 @@
-import { RegistryProvider } from './type.ts'
 import { GithubProvider } from './github.ts'
 import { DenoStdProvider } from './deno.ts'
 import { DenoProvider } from './denox.ts'
+import { RegistryProvider } from './RegistryProvider.ts'
+import { RegistryOption } from './type.ts'
 
 const providersMap = {
   github: new GithubProvider(),
@@ -21,33 +22,52 @@ export interface ModConfig {
 }
 
 export class Registry {
-  getProvider(type: RegistryType): RegistryProvider {
+  #toImportOpt(name: string, url: string) {
+    if (url.endsWith('/')) {
+      return {
+        name: `${name}/`,
+        url,
+      }
+    }
+
+    return {
+      name,
+      url,
+    }
+  }
+
+  #getProvider(type: RegistryType): RegistryProvider {
     return providersMap[type]
   }
 
-  /**
-   *
-   * @param mod
-   * ex.
-   *
-   * deno - mod@version
-   *
-   * github - username/repo@version
-   */
-  async upgrade(mod: string, type: RegistryType): Promise<ModConfig> {
-    const provider = this.getProvider(type)
+  getType(uri: string): RegistryType | false {
+    for (const p of providers) {
+      if (p.check(uri)) {
+        return p.type
+      }
+    }
 
-    const opt = provider.parseMod(mod)
+    return false
+  }
+
+  parseMod(mod: string, type: RegistryType): RegistryOption {
+    return this.#getProvider(type).parseMod(mod)
+  }
+
+  parse(url: string, type: RegistryType): RegistryOption {
+    return this.#getProvider(type).parseMod(url)
+  }
+
+  async upgrade(opt: RegistryOption): Promise<ModConfig> {
+    // @ts-ignore
+    const provider = this.#getProvider(opt.type)
 
     const versions = await provider.versions(opt)
     opt.version = versions[0]
 
-    const url = provider.generate(opt)
+    const uri = provider.generate(opt)
 
-    return {
-      name: opt.mod,
-      url,
-    }
+    return this.#toImportOpt(opt.mod, uri)
   }
 
   async install(mod: string, type: RegistryType): Promise<ModConfig> {
@@ -62,10 +82,7 @@ export class Registry {
 
     const url = provider.generate(opt)
 
-    return {
-      name: opt.mod,
-      url,
-    }
+    return this.#toImportOpt(opt.mod, url)
   }
 }
 
