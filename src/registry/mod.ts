@@ -4,6 +4,7 @@ import { GithubProvider } from './github.ts'
 import { DenoStdProvider } from './deno.ts'
 import { DenoProvider } from './denox.ts'
 import { SkypackProvider } from './skypack.ts'
+import { getLatestVersion } from './utils.ts'
 
 const providersMap = {
   github: new GithubProvider(),
@@ -65,7 +66,8 @@ export class Registry {
     const provider = this.#getProvider(opt.type)
 
     const versions = await provider.versions(opt)
-    opt.version = versions[0]
+
+    opt.version = getLatestVersion(opt.version, versions)
 
     const uri = provider.generate(opt)
 
