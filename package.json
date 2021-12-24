@@ -1,6 +1,6 @@
 {
   "name": "xm",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Deno import map manager",
   "main": "xm.ts",
   "repository": "https://github.com/0x-jerry/xm.git",
