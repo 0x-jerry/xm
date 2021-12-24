@@ -80,7 +80,12 @@ export class GithubProvider extends RegistryProvider<GithubParseResult> {
   generate(opt: GithubParseResult): string {
     const { version, mod, username, entry } = opt
 
-    return `https://raw.githubusercontent.com/${username}/${mod}/${version}/${entry}`
+    return [
+      `https://raw.githubusercontent.com/${username}/${mod}/${version}`,
+      entry,
+    ]
+      .filter(Boolean)
+      .join('/')
   }
 
   /**

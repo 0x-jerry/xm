@@ -74,7 +74,7 @@ Deno.test('generate', () => {
     entry: '',
   })
 
-  assertEquals(r, 'https://raw.githubusercontent.com/0x-jerry2/xxx/0.1.3/')
+  assertEquals(r, 'https://raw.githubusercontent.com/0x-jerry2/xxx/0.1.3')
 })
 
 Deno.test('generate with entry', () => {

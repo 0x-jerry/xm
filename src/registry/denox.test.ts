@@ -66,7 +66,7 @@ Deno.test('generate', () => {
     entry: '',
   })
 
-  assertEquals(r, 'https://deno.land/x/cliffy1@0.111.0/')
+  assertEquals(r, 'https://deno.land/x/cliffy1@0.111.0')
 })
 
 Deno.test('generate with entry', () => {

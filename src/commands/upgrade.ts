@@ -1,5 +1,4 @@
 import { Command, EnumType } from 'cliffy/command/mod.ts'
-import { debug } from '../debug.ts'
 import { importConfig } from '../importConfig.ts'
 import { registryManager, registryTypes } from '../registry/mod.ts'
 
@@ -17,6 +16,7 @@ export const upgradeCommand = new Command()
       await upgradeMod(modName)
     } else {
       const mods = Object.keys(importConfig.mods)
+
       for (let index = 0; index < mods.length; index++) {
         const mod = mods[index]
         try {
@@ -34,7 +34,7 @@ async function upgradeMod(modName: string) {
   const upgradeModOpt = getUpgradeOption(modName)
 
   if (!upgradeModOpt) {
-    throw new Error('Failed to parse mod: ' + modName)
+    throw new Error('Can not find mod: ' + modName)
   }
 
   const conf = await registryManager.upgrade(upgradeModOpt.opt)
@@ -46,9 +46,9 @@ function getUpgradeOption(modName: string) {
   if (modName in importConfig.mods) {
     const uri = importConfig.mods[modName]
     const type = registryManager.getType(uri)
+
     if (!type) {
-      debug.warn('Parse type failed:', uri)
-      return
+      throw new Error('Register is not support. ' + uri)
     }
 
     const opt = registryManager.parse(uri, type)
@@ -61,24 +61,24 @@ function getUpgradeOption(modName: string) {
   }
 
   for (const mod in importConfig.mods) {
-    if (Object.prototype.hasOwnProperty.call(importConfig.mods, mod)) {
-      const uri = importConfig.mods[mod]
-      const type = registryManager.getType(uri)
-      if (!type) {
-        debug.warn('Parse type failed:', uri)
-        continue
-      }
+    const uri = importConfig.mods[mod]
+    const type = registryManager.getType(uri)
+    if (!type) {
+      // Register is not support, ignored.
+      continue
+    }
 
-      const opt = registryManager.parse(uri, type)
+    const opt = registryManager.parse(uri, type)
 
-      if (opt.mod === modName) {
-        console.log('upgrade mod', mod, 'success')
+    if (opt.mod !== modName) {
+      continue
+    }
 
-        return {
-          name: mod,
-          opt,
-        }
-      }
+    console.log('upgrade mod', modName, 'success')
+
+    return {
+      name: mod,
+      opt,
     }
   }
 }

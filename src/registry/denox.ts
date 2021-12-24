@@ -59,7 +59,9 @@ export class DenoProvider extends RegistryProvider<DenoParseResult> {
   generate(opt: DenoParseResult): string {
     const { version, mod, entry } = opt
 
-    return `https://deno.land/x/${mod}@${version}/${entry}`
+    return [`https://deno.land/x/${mod}@${version}`, entry]
+      .filter(Boolean)
+      .join('/')
   }
 
   async versions(opt: DenoParseResult): Promise<string[]> {
