@@ -14,37 +14,61 @@ export abstract class RegistryProvider<
   /**
    * ex.
    *
-   * - mod@version/mod.ts
+   * - mod@version/entry.ts
+   * - mod@version/entry.ts?dts
    * - mod@version
    * - mod
+   * - mod/entry.ts
+   * - mod/entry.ts?dts
+   *
+   * - @scope/mod@version
+   * - @scope/mod@version/entry.ts
+   * - @scope/mod@version/entry.ts?dts
+   * - @scope/mod
+   * - @scope/mod/entry.ts
+   * - @scope/mod/entry.ts?dts
    *
    * @param modName
    */
   parseMod(modName: string): RegistryOption {
-    const hasVersion = modName.includes('@')
+    const url = new URL(modName, 'http://xxx.com')
 
-    if (!hasVersion) {
-      const [mod, ...entry] = modName.split('/')
+    const [_, ...segments] = url.pathname.split('/')
 
-      return {
-        type: '',
-        version: '',
-        mod,
-        entry: entry.join('/'),
-      }
-    }
+    const isScoped = segments[0].startsWith('@')
 
-    const [mod = '', suffix = ''] = modName.split('@')
-    const [version = '', ...entry] = suffix.split('/')
-
-    return {
+    const result: RegistryOption = {
       type: '',
-      version,
-      mod,
-      entry: entry.join('/'),
+      version: '',
+      mod: '',
+      entry: '',
     }
+
+    if (isScoped) {
+      const [scope, modAndVersion, ...entries] = segments
+
+      const [mod, version = ''] = modAndVersion.split('@')
+      result.mod = `${scope}/${mod}`
+      result.version = version
+      result.entry = joinEntries(entries) + url.search
+    } else {
+      const [modAndVersion, ...entries] = segments
+
+      const [mod, version = ''] = modAndVersion.split('@')
+      result.mod = mod
+      result.version = version
+      result.entry = joinEntries(entries) + url.search
+    }
+
+    return result
   }
 
   abstract generate(opt: T): string
   abstract versions(opt: T): string[] | Promise<string[]>
+}
+
+function joinEntries(entries: string[]) {
+  return entries.reduce((pre, cur, idx) => {
+    return idx === 0 ? '/' + cur : pre + cur
+  }, '')
 }
