@@ -26,7 +26,7 @@ export class GithubProvider extends RegistryProvider<GithubParseResult> {
    */
   parse(url: string): GithubParseResult {
     const r =
-      /^https?:\/\/raw\.githubusercontent\.com\/(?<username>[^/]+)\/(?<mod>[^/]+)\/(?<version>[^/]+)\/(?<entry>.*)/
+      /^https?:\/\/raw\.githubusercontent\.com\/(?<username>[^/]+)\/(?<mod>[^/]+)\/(?<version>[^/]+)(?<entry>.*)/
 
     const group = r.exec(url)?.groups || {}
 
@@ -54,20 +54,10 @@ export class GithubProvider extends RegistryProvider<GithubParseResult> {
    * @param mod
    */
   parseMod(mod: string): GithubParseResult {
-    const opt = super.parseMod(mod)
+    // username/repo@version/mod.ts  => @username/repo@version/mod.ts
+    const opt = super.parseMod('@' + mod)
 
-    if (!opt.version) {
-      const [mod, ...entry] = opt.entry.split('/')
-      return {
-        username: opt.mod,
-        mod,
-        type: registryType,
-        entry: entry.join('/'),
-        version: '',
-      }
-    }
-
-    const [username, repo] = opt.mod.split('/')
+    const [username, repo] = opt.mod.slice(1).split('/')
 
     return {
       ...opt,
@@ -80,12 +70,7 @@ export class GithubProvider extends RegistryProvider<GithubParseResult> {
   generate(opt: GithubParseResult): string {
     const { version, mod, username, entry } = opt
 
-    return [
-      `https://raw.githubusercontent.com/${username}/${mod}/${version}`,
-      entry,
-    ]
-      .filter(Boolean)
-      .join('/')
+    return `https://raw.githubusercontent.com/${username}/${mod}/${version}${entry}`
   }
 
   /**

@@ -21,7 +21,7 @@ export class DenoStdProvider extends RegistryProvider<DenoStdParseResult> {
    */
   parse(url: string): DenoStdParseResult {
     const r =
-      /^https?:\/\/deno\.land\/std@(?<version>[^/]+)\/(?<mod>[^/]+)\/(?<entry>.*)/
+      /^https?:\/\/deno\.land\/std@(?<version>[^/]+)\/(?<mod>[^/]+)(?<entry>.*)/
 
     const group = r.exec(url)?.groups || {}
 
@@ -59,9 +59,7 @@ export class DenoStdProvider extends RegistryProvider<DenoStdParseResult> {
   generate(opt: DenoStdParseResult): string {
     const { version, mod, entry } = opt
 
-    return [`https://deno.land/std@${version}/${mod}`, entry]
-      .filter(Boolean)
-      .join('/')
+    return `https://deno.land/std@${version}/${mod}${entry}`
   }
 
   async versions(opt: DenoStdParseResult): Promise<string[]> {

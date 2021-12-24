@@ -69,6 +69,6 @@ export abstract class RegistryProvider<
 
 function joinEntries(entries: string[]) {
   return entries.reduce((pre, cur, idx) => {
-    return idx === 0 ? '/' + cur : pre + cur
+    return idx === 0 ? '/' + cur : pre + '/' + cur
   }, '')
 }

@@ -32,7 +32,7 @@ Deno.test('parse with entry', () => {
     type: p.type,
     mod: '@vue/reactivity',
     version: '3.2.1',
-    entry: 'ref?dts',
+    entry: '/ref?dts',
   })
 })
 
@@ -52,7 +52,7 @@ Deno.test('generate with entry', () => {
     type: p.type,
     mod: 'xxx',
     version: '0.1.3',
-    entry: 'x/mod.ts?dts',
+    entry: '/x/mod.ts?dts',
   })
 
   assertEquals(r, 'https://cdn.skypack.dev/xxx@0.1.3/x/mod.ts?dts')

@@ -16,53 +16,30 @@ export class SkypackProvider extends RegistryProvider<SkypackParseResult> {
 
   /**
    *
+   * @param modName
+   */
+  parseMod(modName: string): SkypackParseResult {
+    const opt = super.parseMod(modName)
+
+    return {
+      ...opt,
+      type: registryType,
+    }
+  }
+
+  /**
+   *
    * @param url ex. https://cdn.skypack.dev/@vue/reactivity@3.2.1?dts
    * @returns
    */
   parse(url: string): SkypackParseResult {
-    const u = new URL(url)
-    const result: SkypackParseResult = {
-      mod: '',
-      version: '',
-      entry: '',
-      type: registryType,
-    }
-
-    const [_, ...segments] = u.pathname.split('/')
-
-    const isScoped = segments[0].startsWith('@')
-
-    if (isScoped) {
-      const [scope, modAndVersion, ...entries] = segments
-
-      const [mod, version = ''] = modAndVersion.split('@')
-      result.mod = `${scope}/${mod}`
-      result.version = version
-      result.entry = entries.join('/')
-    } else {
-      const [modAndVersion, ...entries] = segments
-
-      const [mod, version = ''] = modAndVersion.split('@')
-      result.mod = mod
-      result.version = version
-      result.entry = entries.join('/')
-    }
-
-    result.entry += u.search
-
-    if (!result.mod) {
-      throw new Error(`Parse error: ${url}`)
-    }
-
-    return result
+    return this.parseMod(url)
   }
 
   generate(opt: SkypackParseResult): string {
     const { version, mod, entry } = opt
 
-    return [`https://cdn.skypack.dev/${mod}@${version}`, entry]
-      .filter(Boolean)
-      .join('/')
+    return `https://cdn.skypack.dev/${mod}@${version}${entry}`
   }
 
   /**

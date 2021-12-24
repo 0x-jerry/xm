@@ -11,7 +11,7 @@ Deno.test('parse', () => {
     username: '0x-jerry',
     mod: 'd-lib',
     version: 'v0.1.3',
-    entry: '',
+    entry: '/',
   })
 })
 
@@ -25,7 +25,7 @@ Deno.test('parse with entry', () => {
     username: '0x-jerry',
     mod: 'd-lib',
     version: 'v0.1.3',
-    entry: 'xxx/mod.ts',
+    entry: '/xxx/mod.ts',
   })
 })
 
@@ -49,7 +49,7 @@ Deno.test('parse mod without version', () => {
     username: '0x-jerry1',
     mod: 'testing',
     version: '',
-    entry: 'xx/mod.ts',
+    entry: '/xx/mod.ts',
   })
 })
 
@@ -61,7 +61,7 @@ Deno.test('parse mod with entry', () => {
     username: '0x-jerry1',
     mod: 'testing',
     version: '0.111.0',
-    entry: 'xxx/mod.ts',
+    entry: '/xxx/mod.ts',
   })
 })
 
@@ -83,7 +83,7 @@ Deno.test('generate with entry', () => {
     username: '0x-jerry2',
     mod: 'xxx',
     version: '0.1.3',
-    entry: 'x/mod.ts',
+    entry: '/x/mod.ts',
   })
 
   assertEquals(

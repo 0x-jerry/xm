@@ -31,6 +31,14 @@ Deno.test('parse mod name with entry', () => {
     entry: '/entry.ts?dts',
   })
 
+  r = p.parseMod('@scope/mod@version/xx/entry.ts?dts')
+  assertEquals(r, {
+    type: '',
+    version: 'version',
+    mod: '@scope/mod',
+    entry: '/xx/entry.ts?dts',
+  })
+
   r = p.parseMod('@scope/mod@version/?dts')
   assertEquals(r, {
     type: '',

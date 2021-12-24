@@ -43,7 +43,7 @@ Deno.test('parse mod without version', () => {
     mod: 'testing',
     version: '',
     type: p.type,
-    entry: 'xx/mod.ts',
+    entry: '/xx/mod.ts',
   })
 })
 
@@ -54,7 +54,7 @@ Deno.test('parse mod with entry', () => {
     mod: 'testing',
     version: '0.111.0',
     type: p.type,
-    entry: 'xx/mod.ts',
+    entry: '/xx/mod.ts',
   })
 })
 
@@ -74,7 +74,7 @@ Deno.test('generate with entry', () => {
     mod: 'cliffy1',
     version: '0.111.0',
     type: p.type,
-    entry: 'x/mod.ts',
+    entry: '/x/mod.ts',
   })
 
   assertEquals(r, 'https://deno.land/x/cliffy1@0.111.0/x/mod.ts')
