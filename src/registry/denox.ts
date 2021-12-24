@@ -21,7 +21,7 @@ export class DenoProvider extends RegistryProvider<DenoParseResult> {
    */
   parse(url: string): DenoParseResult {
     const r =
-      /^https?:\/\/deno\.land\/x\/(?<mod>[^@]+)@(?<version>[^/]+)\/(?<entry>.*)/
+      /^https?:\/\/deno\.land\/x\/(?<mod>[^@]+)@(?<version>[^/]+)(?<entry>.*)/
 
     const group = r.exec(url)?.groups || {}
 

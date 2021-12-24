@@ -10,7 +10,7 @@ Deno.test('parse', () => {
     mod: 'cliffy',
     version: 'v0.20.1',
     type: p.type,
-    entry: '',
+    entry: '/',
   })
 })
 
@@ -21,7 +21,7 @@ Deno.test('parse with entry', () => {
     mod: 'cliffy',
     version: 'v0.20.1',
     type: p.type,
-    entry: 'xxx/mod.ts',
+    entry: '/xxx/mod.ts',
   })
 })
 
