@@ -1,13 +1,15 @@
+import { RegistryProvider } from './RegistryProvider.ts'
+import { RegistryOption } from './type.ts'
 import { GithubProvider } from './github.ts'
 import { DenoStdProvider } from './deno.ts'
 import { DenoProvider } from './denox.ts'
-import { RegistryProvider } from './RegistryProvider.ts'
-import { RegistryOption } from './type.ts'
+import { SkypackProvider } from './skypack.ts'
 
 const providersMap = {
   github: new GithubProvider(),
   deno: new DenoProvider(),
   denoStd: new DenoStdProvider(),
+  skypack: new SkypackProvider(),
 }
 
 const providers = Object.values(providersMap)
