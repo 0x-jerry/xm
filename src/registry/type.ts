@@ -4,3 +4,10 @@ export interface RegistryOption {
   mod: string
   entry: string
 }
+
+export type MayPromise<T> = T | Promise<T>
+
+export interface ModVersions {
+  latest: string
+  versions: string[]
+}

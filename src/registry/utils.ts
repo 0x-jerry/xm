@@ -1,6 +1,9 @@
 import * as semver from 'semver/mod.ts'
 
-export function getLatestVersion(originVersion: string, versions: string[]) {
+export function getLatestCompatibleVersion(
+  originVersion: string,
+  versions: string[],
+) {
   let latestVersion = originVersion
 
   if (!originVersion) {

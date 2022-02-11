@@ -1,5 +1,5 @@
 import { RegistryProvider } from './RegistryProvider.ts'
-import { RegistryOption } from './type.ts'
+import { ModVersions, RegistryOption } from './type.ts'
 
 import { assertEquals } from 'testing/asserts.ts'
 
@@ -15,7 +15,7 @@ class TestProvider extends RegistryProvider {
   generate(opt: RegistryOption): string {
     throw new Error('Method not implemented.')
   }
-  versions(opt: RegistryOption): string[] | Promise<string[]> {
+  versions(opt: RegistryOption): Promise<ModVersions> {
     throw new Error('Method not implemented.')
   }
 }

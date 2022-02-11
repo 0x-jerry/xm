@@ -1,5 +1,5 @@
 import { RegistryProvider } from './RegistryProvider.ts'
-import { RegistryOption } from './type.ts'
+import { ModVersions, RegistryOption } from './type.ts'
 
 const registryType = 'deno'
 
@@ -62,7 +62,7 @@ export class DenoProvider extends RegistryProvider<DenoParseResult> {
     return `https://deno.land/x/${mod}@${version}${entry}`
   }
 
-  async versions(opt: DenoParseResult): Promise<string[]> {
+  async versions(opt: DenoParseResult): Promise<ModVersions> {
     const res = await fetch(
       `https://cdn.deno.land/${opt.mod}/meta/versions.json`,
     )
@@ -73,13 +73,13 @@ export class DenoProvider extends RegistryProvider<DenoParseResult> {
       )
     }
 
-    const r: DenoFetchResult = await res.json()
+    const r: DenoXFetchResult = await res.json()
 
-    return r.versions
+    return r
   }
 }
 
-interface DenoFetchResult {
+interface DenoXFetchResult {
   latest: string
   versions: string[]
 }

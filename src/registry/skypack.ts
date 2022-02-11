@@ -1,5 +1,5 @@
 import { RegistryProvider } from './RegistryProvider.ts'
-import { RegistryOption } from './type.ts'
+import { RegistryOption, ModVersions } from './type.ts'
 
 const registryType = 'skypack'
 
@@ -47,7 +47,7 @@ export class SkypackProvider extends RegistryProvider<SkypackParseResult> {
    * @param opt
    * @returns
    */
-  async versions(opt: SkypackParseResult): Promise<string[]> {
+  async versions(opt: SkypackParseResult): Promise<ModVersions> {
     const queryTagsUrl = `https://api.skypack.dev/v1/package/${opt.mod}`
     const res = await fetch(queryTagsUrl)
 
@@ -57,7 +57,10 @@ export class SkypackProvider extends RegistryProvider<SkypackParseResult> {
 
     const r: SkypackFetchTag = await res.json()
 
-    return Object.keys(r.versions)
+    return {
+      latest: r.distTags.latest,
+      versions: Object.keys(r.versions),
+    }
   }
 }
 
@@ -66,4 +69,8 @@ interface SkypackFetchTag {
    * version => publish date
    */
   versions: Record<string, string>
+
+  distTags: {
+    latest: string
+  }
 }

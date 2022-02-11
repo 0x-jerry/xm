@@ -1,5 +1,5 @@
 import { RegistryProvider } from './RegistryProvider.ts'
-import { RegistryOption } from './type.ts'
+import { ModVersions, RegistryOption } from './type.ts'
 
 const registryType = 'github'
 
@@ -78,7 +78,7 @@ export class GithubProvider extends RegistryProvider<GithubParseResult> {
    * @param opt
    * @returns
    */
-  async versions(opt: GithubParseResult): Promise<string[]> {
+  async versions(opt: GithubParseResult): Promise<ModVersions> {
     const res = await fetch(
       `https://api.github.com/repos/${opt.username}/${opt.mod}/tags`,
     )
@@ -91,7 +91,12 @@ export class GithubProvider extends RegistryProvider<GithubParseResult> {
 
     const r: GithubFetchTag[] = await res.json()
 
-    return r.map((i) => i.name)
+    const versions = r.map((i) => i.name)
+
+    return {
+      latest: versions[0] || '',
+      versions,
+    }
   }
 }
 

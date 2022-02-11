@@ -1,4 +1,4 @@
-import { RegistryOption } from './type.ts'
+import { MayPromise, ModVersions, RegistryOption } from './type.ts'
 
 export abstract class RegistryProvider<
   T extends RegistryOption = RegistryOption,
@@ -64,7 +64,8 @@ export abstract class RegistryProvider<
   }
 
   abstract generate(opt: T): string
-  abstract versions(opt: T): string[] | Promise<string[]>
+
+  abstract versions(opt: T): MayPromise<ModVersions>
 }
 
 function joinEntries(entries: string[]) {

@@ -4,7 +4,7 @@ import { GithubProvider } from './github.ts'
 import { DenoStdProvider } from './deno.ts'
 import { DenoProvider } from './denox.ts'
 import { SkypackProvider } from './skypack.ts'
-import { getLatestVersion } from './utils.ts'
+import { getLatestCompatibleVersion } from './utils.ts'
 
 const providersMap = {
   github: new GithubProvider(),
@@ -22,6 +22,13 @@ type RegistryType = typeof registryTypes[number]
 export interface ModConfig {
   name: string
   url: string
+}
+
+export interface UpgradeModOption {
+  /**
+   * @default false
+   */
+  latest: boolean
 }
 
 export class Registry {
@@ -61,13 +68,18 @@ export class Registry {
     return this.#getProvider(type).parse(url)
   }
 
-  async upgrade(opt: RegistryOption): Promise<ModConfig> {
+  async upgrade(
+    opt: RegistryOption,
+    cmdOpt: UpgradeModOption,
+  ): Promise<ModConfig> {
     // @ts-ignore
     const provider = this.#getProvider(opt.type)
 
     const versions = await provider.versions(opt)
 
-    opt.version = getLatestVersion(opt.version, versions)
+    opt.version = cmdOpt.latest
+      ? versions.latest
+      : getLatestCompatibleVersion(opt.version, versions.versions)
 
     const uri = provider.generate(opt)
 
@@ -81,7 +93,7 @@ export class Registry {
 
     if (!opt.version) {
       const versions = await provider.versions(opt)
-      opt.version = versions[0]
+      opt.version = versions.latest
     }
 
     const url = provider.generate(opt)

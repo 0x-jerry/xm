@@ -1,4 +1,4 @@
-import { RegistryOption } from './type.ts'
+import { ModVersions, RegistryOption } from './type.ts'
 import { RegistryProvider } from './RegistryProvider.ts'
 
 const registryType = 'denoStd'
@@ -62,11 +62,16 @@ export class DenoStdProvider extends RegistryProvider<DenoStdParseResult> {
     return `https://deno.land/std@${version}/${mod}${entry}`
   }
 
-  async versions(opt: DenoStdParseResult): Promise<string[]> {
+  async versions(opt: DenoStdParseResult): Promise<ModVersions> {
     const res = await fetch(`https://cdn.deno.land/std/meta/versions.json`)
 
-    const r = await res.json()
+    const r: DenoFetchResult = await res.json()
 
-    return r.versions
+    return r
   }
+}
+
+interface DenoFetchResult {
+  latest: string
+  versions: string[]
 }
